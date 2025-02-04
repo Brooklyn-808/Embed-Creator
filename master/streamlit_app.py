@@ -4,7 +4,7 @@ import json
 # Initial setup for the page
 st.title("Discord Embed Generator")
 st.write(
-    "Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string to use in your bot."
+    "Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string"
 )
 
 # Store embed data in session state
@@ -79,7 +79,7 @@ if st.button("Generate Embed Data JSON"):
 
     st.subheader("Generated Embed JSON")
     st.text_area("Embed Data JSON String", value=embed_data_json, height=300)
-    st.write("Copy this JSON string and input it into your Disnake cog.")
+    st.write("Copy this JSON string and and send it as >>send_embed <json string>")
 
     # Download button for the JSON
     st.download_button(
