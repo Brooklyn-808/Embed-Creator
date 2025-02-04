@@ -63,8 +63,9 @@ for index, embed in enumerate(st.session_state.embeds):
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}", key=f"add_field_{index}"):
             embed["fields"].append({"name": "", "value": "", "inline": False})
-            st.session_state.embeds = st.session_state.embeds  # Update session state to trigger rerun
-            st.experimental_rerun()  # Refresh the page to show added field
+            # Trigger a rerun to update the session state
+            st.session_state.embeds = st.session_state.embeds
+            st.rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
             field["name"] = st.text_input(f"Field Name for Field {field_index + 1} of Embed {index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
@@ -73,6 +74,7 @@ for index, embed in enumerate(st.session_state.embeds):
 
 # Generate JSON string for embeds
 if st.button("Generate Embed Data JSON"):
+    # Ensure the latest data is used
     embed_data = [
         {
             "title": embed["title"],
