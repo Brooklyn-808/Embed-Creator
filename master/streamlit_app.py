@@ -34,11 +34,11 @@ st.write(
 for index, embed in enumerate(st.session_state.embeds):
     with st.expander(f"Embed {index + 1}", expanded=True):
         # Update embed data
-        embed["title"] = st.text_input(f"Title {index + 1}", value=embed["title"], key=f"title_{index}")
-        embed["description"] = st.text_area(f"Description {index + 1}", value=embed["description"], key=f"desc_{index}")
-        embed["color"] = st.color_picker(f"Color {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
-        embed["footer"] = st.text_input(f"Footer {index + 1}", value=embed["footer"], key=f"footer_{index}")
-        embed["author"] = st.text_input(f"Author {index + 1}", value=embed["author"], key=f"author_{index}")
+        embed["title"] = st.text_input(f"Title for Embed {index + 1}", value=embed["title"], key=f"title_{index}")
+        embed["description"] = st.text_area(f"Description for Embed {index + 1}", value=embed["description"], key=f"desc_{index}")
+        embed["color"] = st.color_picker(f"Color for Embed {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
+        embed["footer"] = st.text_input(f"Footer for Embed {index + 1}", value=embed["footer"], key=f"footer_{index}")
+        embed["author"] = st.text_input(f"Author for Embed {index + 1}", value=embed["author"], key=f"author_{index}")
 
         # Handle fields
         if "fields" not in embed:
@@ -50,9 +50,9 @@ for index, embed in enumerate(st.session_state.embeds):
             st.rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
-            field["name"] = st.text_input(f"Field Name {field_index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
-            field["value"] = st.text_area(f"Field Value {field_index + 1}", value=field["value"], key=f"field_value_{index}_{field_index}")
-            field["inline"] = st.checkbox(f"Inline for Field {field_index + 1}", value=field["inline"], key=f"field_inline_{index}_{field_index}")
+            field["name"] = st.text_input(f"Field Name for Field {field_index + 1} of Embed {index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
+            field["value"] = st.text_area(f"Field Value for Field {field_index + 1} of Embed {index + 1}", value=field["value"], key=f"field_value_{index}_{field_index}")
+            field["inline"] = st.checkbox(f"Inline for Field {field_index + 1} of Embed {index + 1}", value=field["inline"], key=f"field_inline_{index}_{field_index}")
 
 # Generate JSON string for embeds
 if st.button("Generate Embed Data JSON"):
