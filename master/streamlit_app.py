@@ -16,7 +16,7 @@ if st.button("Add New Embed"):
     st.session_state.embeds.append({
         "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": ""
     })
-    st.experimental_rerun()  # Refresh the page to display new embed section
+    st.rerun()  # Refresh the page to display new embed section
 
 # Display instructions
 st.subheader("Instructions")
@@ -47,7 +47,7 @@ for index, embed in enumerate(st.session_state.embeds):
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}"):
             embed["fields"].append({"name": "", "value": "", "inline": False})
-            st.experimental_rerun()  # Refresh the page to show added field
+            st.rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
             field["name"] = st.text_input(f"Field Name {field_index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
