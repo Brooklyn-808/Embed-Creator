@@ -63,7 +63,7 @@ for index, embed in enumerate(st.session_state.embeds):
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}", key=f"add_field_{index}"):
             embed["fields"].append({"name": "", "value": "", "inline": False})
-            st.session_state.embeds = st.session_state.embeds  # To trigger the rerun
+            st.session_state.embeds = st.session_state.embeds  # Update session state to trigger rerun
             st.experimental_rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
