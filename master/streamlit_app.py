@@ -57,7 +57,7 @@ for index, embed in enumerate(st.session_state.embeds):
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}", key=f"add_field_{index}"):
             embed["fields"].append({"name": "", "value": "", "inline": False})
-            st.experimental_rerun()  # Refresh the page to show added field
+            st.rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
             field["name"] = st.text_input(f"Field Name for Field {field_index + 1} of Embed {index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
@@ -67,12 +67,12 @@ for index, embed in enumerate(st.session_state.embeds):
             # Remove field button
             if st.button(f"Remove Field {field_index + 1} from Embed {index + 1}", key=f"remove_field_{index}_{field_index}"):
                 embed["fields"].pop(field_index)
-                st.experimental_rerun()
+                st.rerun()
 
         # Remove embed button
         if st.button(f"Remove Embed {index + 1}", key=f"remove_embed_{index}"):
             st.session_state.embeds.pop(index)
-            st.experimental_rerun()
+            st.rerun()
 
 # Generate JSON string for embeds
 if st.button("Generate Embed Data JSON"):
