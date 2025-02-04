@@ -11,31 +11,18 @@ st.write(
 if "embeds" not in st.session_state:
     st.session_state.embeds = []
 
-# Allow users to paste previous JSON and load it into the session state (only once)
-st.subheader("Paste previous embed JSON to continue editing:")
-json_input = st.text_area("Paste JSON here", height=200)
-
-if json_input and not st.session_state.get('json_loaded', False):
-    try:
-        parsed_json = json.loads(json_input)
-        # If the JSON is valid, load it into the session state
-        if isinstance(parsed_json, list):  # Check if it is a list of embeds
-            st.session_state.embeds = parsed_json
-            st.session_state['json_loaded'] = True  # Mark as loaded to prevent re-loading
-    except json.JSONDecodeError:
-        st.error("Invalid JSON string. Please make sure it's correctly formatted.")
-
 # Add a new embed section
 if st.button("Add New Embed"):
     st.session_state.embeds.append({
-        "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": ""
+        "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": "", 
+        "image_url": "", "thumbnail_url": ""  # Add fields for image URL and thumbnail URL
     })
     st.rerun()  # Refresh the page to display new embed section
 
 # Display instructions
 st.subheader("Instructions")
 st.write(
-    "1. Customize your embeds below by adding titles, descriptions, colors, authors, and footers."
+    "1. Customize your embeds below by adding titles, descriptions, colors, authors, footers, image URLs, and thumbnail URLs."
 )
 st.write(
     "2. Add fields to each embed if needed (e.g., additional info in the embed)."
@@ -53,6 +40,10 @@ for index, embed in enumerate(st.session_state.embeds):
         embed["color"] = st.color_picker(f"Color for Embed {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
         embed["footer"] = st.text_input(f"Footer for Embed {index + 1}", value=embed["footer"], key=f"footer_{index}")
         embed["author"] = st.text_input(f"Author for Embed {index + 1}", value=embed["author"], key=f"author_{index}")
+
+        # New fields for image and thumbnail URLs
+        embed["image_url"] = st.text_input(f"Image URL for Embed {index + 1}", value=embed["image_url"], key=f"image_{index}")
+        embed["thumbnail_url"] = st.text_input(f"Thumbnail URL for Embed {index + 1}", value=embed["thumbnail_url"], key=f"thumbnail_{index}")
 
         # Handle fields
         if "fields" not in embed:
@@ -77,6 +68,8 @@ if st.button("Generate Embed Data JSON"):
             "color": embed["color"],
             "footer": embed["footer"],
             "author": embed["author"],
+            "image": {"url": embed["image_url"]} if embed["image_url"] else None,  # Add image URL if present
+            "thumbnail": {"url": embed["thumbnail_url"]} if embed["thumbnail_url"] else None,  # Add thumbnail URL if present
             "fields": [
                 {
                     "name": field["name"],
