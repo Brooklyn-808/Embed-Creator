@@ -33,8 +33,8 @@ st.write(
 st.subheader("Or paste your previous JSON below:")
 old_json = st.text_area("Paste old JSON here:", height=200, key="old_json_input")
 
-# If user provides JSON, try to load it into the session state
-if old_json:
+# If user provides JSON, try to load it into the session state only if no embeds are already in session state
+if old_json and not st.session_state.embeds:
     try:
         embed_data = json.loads(old_json)
         st.session_state.embeds = embed_data
@@ -42,7 +42,7 @@ if old_json:
     except json.JSONDecodeError:
         st.write("Invalid JSON format. Please paste a valid JSON.")
 
-# Display embed inputs
+# Display embed inputs for all current embeds
 for index, embed in enumerate(st.session_state.embeds):
     with st.expander(f"Embed {index + 1}", expanded=True):
         # Update embed data
