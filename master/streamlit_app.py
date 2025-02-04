@@ -7,7 +7,7 @@ st.write(
     "Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string to use in your bot."
 )
 
-# Store embed data
+# Store embed data in session state
 if "embeds" not in st.session_state:
     st.session_state.embeds = []
 
@@ -16,7 +16,7 @@ if st.button("Add New Embed"):
     st.session_state.embeds.append({
         "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": ""
     })
-    st.rerun()  # Refresh the page to display new embed section
+    st.experimental_rerun()  # Refresh the page to display new embed section
 
 # Display instructions
 st.subheader("Instructions")
@@ -33,25 +33,26 @@ st.write(
 # Display embed inputs
 for index, embed in enumerate(st.session_state.embeds):
     with st.expander(f"Embed {index + 1}", expanded=True):
-        st.text_input(f"Title {index + 1}", value=embed["title"], key=f"title_{index}")
-        st.text_area(f"Description {index + 1}", value=embed["description"], key=f"desc_{index}")
-        st.color_picker(f"Color {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
-        st.text_input(f"Footer {index + 1}", value=embed["footer"], key=f"footer_{index}")
-        st.text_input(f"Author {index + 1}", value=embed["author"], key=f"author_{index}")
+        # Update embed data
+        embed["title"] = st.text_input(f"Title {index + 1}", value=embed["title"], key=f"title_{index}")
+        embed["description"] = st.text_area(f"Description {index + 1}", value=embed["description"], key=f"desc_{index}")
+        embed["color"] = st.color_picker(f"Color {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
+        embed["footer"] = st.text_input(f"Footer {index + 1}", value=embed["footer"], key=f"footer_{index}")
+        embed["author"] = st.text_input(f"Author {index + 1}", value=embed["author"], key=f"author_{index}")
 
         # Handle fields
-        if "fields" not in st.session_state.embeds[index]:
-            st.session_state.embeds[index]["fields"] = []
+        if "fields" not in embed:
+            embed["fields"] = []
 
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}"):
-            st.session_state.embeds[index]["fields"].append({"name": "", "value": "", "inline": False})
-            st.rerun()  # Refresh the page to show added field
+            embed["fields"].append({"name": "", "value": "", "inline": False})
+            st.experimental_rerun()  # Refresh the page to show added field
 
-        for field_index, field in enumerate(st.session_state.embeds[index]["fields"]):
-            st.text_input(f"Field Name {field_index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
-            st.text_area(f"Field Value {field_index + 1}", value=field["value"], key=f"field_value_{index}_{field_index}")
-            st.checkbox(f"Inline for Field {field_index + 1}", value=field["inline"], key=f"field_inline_{index}_{field_index}")
+        for field_index, field in enumerate(embed["fields"]):
+            field["name"] = st.text_input(f"Field Name {field_index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
+            field["value"] = st.text_area(f"Field Value {field_index + 1}", value=field["value"], key=f"field_value_{index}_{field_index}")
+            field["inline"] = st.checkbox(f"Inline for Field {field_index + 1}", value=field["inline"], key=f"field_inline_{index}_{field_index}")
 
 # Generate JSON string for embeds
 if st.button("Generate Embed Data JSON"):
@@ -71,7 +72,7 @@ if st.button("Generate Embed Data JSON"):
                 for field in embed["fields"]
             ]
         }
-        for embed in st.session_state.embeds if embed["title"] or embed["description"]
+        for embed in st.session_state.embeds if embed["title"] or embed["description"]  # Include even if fields are empty
     ]
 
     embed_data_json = json.dumps(embed_data, indent=2)
