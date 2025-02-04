@@ -2,7 +2,7 @@ import streamlit as st
 import json
 
 # Initial setup for the page
-st.title("Discord Embed Generator")
+st.title("Soulknight Prequel Discord Embed Generator")
 st.write(
     "Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string"
 )
