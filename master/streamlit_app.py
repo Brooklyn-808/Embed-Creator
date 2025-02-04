@@ -11,16 +11,17 @@ st.write(
 if "embeds" not in st.session_state:
     st.session_state.embeds = []
 
-# Allow users to paste previous JSON and load it into the session state
+# Allow users to paste previous JSON and load it into the session state (only once)
 st.subheader("Paste previous embed JSON to continue editing:")
 json_input = st.text_area("Paste JSON here", height=200)
 
-if json_input:
+if json_input and not st.session_state.get('json_loaded', False):
     try:
         parsed_json = json.loads(json_input)
         # If the JSON is valid, load it into the session state
         if isinstance(parsed_json, list):  # Check if it is a list of embeds
             st.session_state.embeds = parsed_json
+            st.session_state['json_loaded'] = True  # Mark as loaded to prevent re-loading
     except json.JSONDecodeError:
         st.error("Invalid JSON string. Please make sure it's correctly formatted.")
 
