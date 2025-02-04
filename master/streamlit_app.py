@@ -14,15 +14,14 @@ if "embeds" not in st.session_state:
 # Add a new embed section
 if st.button("Add New Embed"):
     st.session_state.embeds.append({
-        "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": "", 
-        "image_url": "", "thumbnail_url": ""  # Add fields for image URL and thumbnail URL
+        "title": "", "description": "", "color": "", "fields": [], "footer": "", "author": "", "image": None, "thumbnail": None
     })
     st.rerun()  # Refresh the page to display new embed section
 
 # Display instructions
 st.subheader("Instructions")
 st.write(
-    "1. Customize your embeds below by adding titles, descriptions, colors, authors, footers, image URLs, and thumbnail URLs."
+    "1. Customize your embeds below by adding titles, descriptions, colors, authors, and footers."
 )
 st.write(
     "2. Add fields to each embed if needed (e.g., additional info in the embed)."
@@ -30,6 +29,19 @@ st.write(
 st.write(
     "3. Once you're happy with the embeds, click 'Generate Embed Data JSON' to create the JSON string."
 )
+
+# Old JSON input box for users to paste
+st.subheader("Or paste your previous JSON below:")
+old_json = st.text_area("Paste old JSON here:", height=200)
+
+# If user provides JSON, try to load it into the session state
+if old_json:
+    try:
+        embed_data = json.loads(old_json)
+        st.session_state.embeds = embed_data
+        st.write("Loaded your previous JSON successfully!")
+    except json.JSONDecodeError:
+        st.write("Invalid JSON format. Please paste a valid JSON.")
 
 # Display embed inputs
 for index, embed in enumerate(st.session_state.embeds):
@@ -40,10 +52,10 @@ for index, embed in enumerate(st.session_state.embeds):
         embed["color"] = st.color_picker(f"Color for Embed {index + 1}", value=embed["color"] or "#FFFFFF", key=f"color_{index}")
         embed["footer"] = st.text_input(f"Footer for Embed {index + 1}", value=embed["footer"], key=f"footer_{index}")
         embed["author"] = st.text_input(f"Author for Embed {index + 1}", value=embed["author"], key=f"author_{index}")
-
-        # New fields for image and thumbnail URLs
-        embed["image_url"] = st.text_input(f"Image URL for Embed {index + 1}", value=embed["image_url"], key=f"image_{index}")
-        embed["thumbnail_url"] = st.text_input(f"Thumbnail URL for Embed {index + 1}", value=embed["thumbnail_url"], key=f"thumbnail_{index}")
+        
+        # Image and Thumbnail URL fields
+        embed["image"] = st.text_input(f"Image URL for Embed {index + 1}", value=embed.get("image", ""), key=f"image_{index}")
+        embed["thumbnail"] = st.text_input(f"Thumbnail URL for Embed {index + 1}", value=embed.get("thumbnail", ""), key=f"thumbnail_{index}")
 
         # Handle fields
         if "fields" not in embed:
@@ -68,8 +80,12 @@ if st.button("Generate Embed Data JSON"):
             "color": embed["color"],
             "footer": embed["footer"],
             "author": embed["author"],
-            "image": {"url": embed["image_url"]} if embed["image_url"] else None,  # Add image URL if present
-            "thumbnail": {"url": embed["thumbnail_url"]} if embed["thumbnail_url"] else None,  # Add thumbnail URL if present
+            "image": {
+                "url": embed["image"]
+            } if embed["image"] else None,
+            "thumbnail": {
+                "url": embed["thumbnail"]
+            } if embed["thumbnail"] else None,
             "fields": [
                 {
                     "name": field["name"],
@@ -86,7 +102,7 @@ if st.button("Generate Embed Data JSON"):
 
     st.subheader("Generated Embed JSON")
     st.text_area("Embed Data JSON String", value=embed_data_json, height=300)
-    st.write("Copy this JSON string and and send it as >>send_embed <json string>")
+    st.write("Copy this JSON string and send it as >>send_embed <json string>")
 
     # Download button for the JSON
     st.download_button(
