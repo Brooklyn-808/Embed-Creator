@@ -1,10 +1,12 @@
 import streamlit as st
 import json
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Soul Knight Prequel Discord Embed Generator",
     page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",  # replace with your image URL
 )
+
 # Initial setup for the page
 st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
@@ -61,7 +63,7 @@ for index, embed in enumerate(st.session_state.embeds):
         st.write("Fields:")
         if st.button(f"Add Field to Embed {index + 1}", key=f"add_field_{index}"):
             embed["fields"].append({"name": "", "value": "", "inline": False})
-            st.rerun()  # Refresh the page to show added field
+            st.experimental_rerun()  # Refresh the page to show added field
 
         for field_index, field in enumerate(embed["fields"]):
             field["name"] = st.text_input(f"Field Name for Field {field_index + 1} of Embed {index + 1}", value=field["name"], key=f"field_name_{index}_{field_index}")
@@ -71,12 +73,12 @@ for index, embed in enumerate(st.session_state.embeds):
             # Remove field button
             if st.button(f"Remove Field {field_index + 1} from Embed {index + 1}", key=f"remove_field_{index}_{field_index}"):
                 embed["fields"].pop(field_index)
-                st.rerun()
+                st.experimental_rerun()
 
         # Remove embed button
         if st.button(f"Remove Embed {index + 1}", key=f"remove_embed_{index}"):
             st.session_state.embeds.pop(index)
-            st.rerun()
+            st.experimental_rerun()
 
 # Generate JSON string for embeds
 if st.button("Generate Embed Data JSON"):
@@ -125,3 +127,26 @@ if st.button("Generate Embed Data JSON"):
         file_name="discord_embeds.json",
         mime="application/json"
     )
+
+    # Render HTML preview
+    html_content = ""
+    for embed in st.session_state.embeds:
+        color_border = embed["color"] if embed["color"] else "#5865F2"
+        html_content += f"""
+        <div class='embed-container' style='background-color:#36393f;border-left:5px solid {color_border};padding:16px;margin-bottom:20px;border-radius:8px;'>
+            <div class='embed-content'>
+                <div class='embed-author'>
+                    {'<img src="' + embed['author']['icon_url'] + '" style="width:20px;height:20px;border-radius:50%;margin-right:8px;">' if embed['author'].get('icon_url') else ''}
+                    <span>{embed['author'].get('name', '')}</span>
+                </div>
+                <div class='embed-title' style='font-size:18px;font-weight:bold;margin-bottom:8px;'>{embed['title']}</div>
+                <div class='embed-description' style='font-size:14px;color:#b9bbbe;margin-bottom:8px;'>{embed['description']}</div>
+                {f'<img src="{embed['image']}" style="width:100%;max-height:300px;border-radius:4px;object-fit:cover;margin-top:8px;">' if embed.get('image') else ''}
+                <div class='embed-footer' style='font-size:12px;color:#b9bbbe;margin-top:8px;'>{embed['footer'].get('text', '')}</div>
+            </div>
+            {f'<img src="{embed['thumbnail']}" style="width:80px;height:80px;border-radius:4px;object-fit:cover;margin-left:16px;flex-shrink:0;">' if embed.get('thumbnail') else ''}
+        </div>
+        """
+
+    # Embed the HTML preview
+    components.html(f"<style>{open('embed_preview.css').read()}</style>{html_content}", height=400, scrolling=True)
