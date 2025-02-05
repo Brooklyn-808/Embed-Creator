@@ -103,10 +103,8 @@ if st.button("Preview Embed"):
         footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
         description_html = f"<div style='font-size: 14px; word-wrap: break-word; color: #b9bbbe;'>{embed['description']}</div>"
     
-        # Render fields
-        fields_html = ""
-        for field in embed["fields"]:
-            fields_html += f"""<div style="margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;"><strong>{field['name']}</strong><br>{field['value']}</div>""" if not field["inline"] else f"""<div style="display: inline-block; width: 45%; margin: 8px; padding: 4px; border: 1px solid #b9bbbe;"><strong>{field['name']}</strong><br>{field['value']}</div>"""
+        fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; padding: 4px; background: #2f3136; border: 1px solid #b9bbbe;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
+
     
         html_content = f"<div style='background-color: #36393f; padding: 16px; border-radius: 8px; color: white; {color_style} margin-bottom: 20px;'>{thumbnail_html}<div>{author_html}<div style='font-size: 18px; font-weight: bold;'>{embed['title']}</div>{description_html}{fields_html}{image_html}{footer_html}</div></div>"
 
