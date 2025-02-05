@@ -96,8 +96,8 @@ if st.button("Generate Embed Data JSON"):
 if st.button("Preview Embed"):
     st.markdown("### Embed Preview")
     for embed in st.session_state.embeds:
-        icon_ur = f"""<img src='{embed['author'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>"""
-        ficon_ur = f"""<img src='{embed['footer'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>"""
+        icon_ur = f"""<img src='{embed['author'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>""" if embed['author'].get('icon_url') else ""
+        ficon_ur = f"""<img src='{embed['footer'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>""" if embed['footer'].get('icon_url') else ""
         color_style = f"border-left: 5px solid {embed['color']};" if embed['color'] else ""
         author_html = f"<div>{icon_ur} {embed['author'].get('name', '')}</div>" if embed['author'].get('name') else ""
         image_html = f"<img src='{embed['image']}' style='max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 8px;'>" if embed['image'] else ""
