@@ -96,11 +96,13 @@ if st.button("Generate Embed Data JSON"):
 if st.button("Preview Embed"):
     st.markdown("### Embed Preview")
     for embed in st.session_state.embeds:
+        icon_ur = f"""<img src='{embed['author'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>"""
+        ficon_ur = f"""<img src='{embed['footer'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'>"""
         color_style = f"border-left: 5px solid {embed['color']};" if embed['color'] else ""
-        author_html = f"<div><img src='{embed['author'].get('icon_url', '')}' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;'> {embed['author'].get('name', '')}</div>" if embed['author'].get('name') else ""
+        author_html = f"<div>{icon_ur} {embed['author'].get('name', '')}</div>" if embed['author'].get('name') else ""
         image_html = f"<img src='{embed['image']}' style='max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 8px;'>" if embed['image'] else ""
         thumbnail_html = f"<img src='{embed['thumbnail']}' style='width: 80px; height: 80px; border-radius: 4px; float: right;'>" if embed['thumbnail'] else ""
-        footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
+        footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{ficon_ur} {embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
         description_html = f"<div style='font-size: 14px; word-wrap: break-word; color: #b9bbbe;'>{embed['description']}</div>"
     
         fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
