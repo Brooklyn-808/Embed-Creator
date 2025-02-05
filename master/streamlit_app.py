@@ -1,6 +1,10 @@
 import streamlit as st
 import json
 
+st.set_page_config(
+    page_title="Soul Knight Prequel Discord Embed Generator",
+    page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",  # replace with your image URL
+)
 # Initial setup for the page
 st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
