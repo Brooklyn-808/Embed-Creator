@@ -138,6 +138,6 @@ if st.button("Preview Embed"):
         author_html = f"<div><img src='{embed['author'].get('icon_url', '')}' alt='Author Icon' style='width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; display: inline-block;'> {embed['author'].get('name', '')}</div>" if embed['author'].get('name') else ""
         image_html = f"<img src='{embed['image']}' style='max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 8px;'>" if embed['image'] else ""
         thumbnail_html = f"<img src='{embed['thumbnail']}' style='width: 80px; height: 80px; border-radius: 4px; margin-left: 16px; float: right;'>" if embed['thumbnail'] else ""
-        footer_html = f"<div style='font-size: 12px; color: #b9bbbe;'>{embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
+        footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
         des_html = f"""<div style="font-size: 14px; color: #b9bbbe;">{embed['description']}</div>"""
         st.markdown(f"""<div style="background-color: #36393f; padding: 16px; border-radius: 8px; color: white; {color_style} margin-bottom: 20px;">{thumbnail_html}<div>{author_html}<div style="font-size: 18px; font-weight: bold;">{embed['title']}</div>{des_html}{image_html}{footer_html}</div></div>""", unsafe_allow_html=True)
