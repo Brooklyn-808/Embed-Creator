@@ -103,9 +103,9 @@ if st.button("Preview Embed"):
         image_html = f"<img src='{embed['image']}' style='max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 8px;'>" if embed['image'] else ""
         thumbnail_html = f"<img src='{embed['thumbnail']}' style='width: 80px; height: 80px; border-radius: 4px; float: right;'>" if embed['thumbnail'] else ""
         footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{ficon_ur} {embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
-        description_html = f"<div style='font-size: 14px; word-wrap: break-word; color: #b9bbbe;'>{embed['description']}</div>"
+        description_html = f"<div style='font-size: 14px; word-wrap: break-word; color: #b9bbbe;'>{embed['description'].replace('\n', '<br>')}</div>"
     
-        fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
+        fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value'].replace('\n', '<br>')}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
 
 
     
