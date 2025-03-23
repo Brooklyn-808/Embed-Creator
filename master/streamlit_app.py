@@ -143,7 +143,7 @@ if st.button("Send Embed"):
         ]
 
         embed_payload = {
-            "channel": st.session_state.channels[selected_channel],
+            "channel": st.session_state.channels[str(selected_channel)],
             "embeds": embed_data,
             "message": None,
             "api_key": API_KEY
