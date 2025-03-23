@@ -29,8 +29,9 @@ st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
 
 # Fetch channels
-if not st.session_state.channels:
+if 'channels' not in st.session_state:
     st.session_state.channels = fetch_channels()
+
 
 channel_names = list(st.session_state.channels.keys()) if st.session_state.channels else ["No channels available"]
 selected_channel = st.selectbox("Select a Discord Channel", channel_names)
