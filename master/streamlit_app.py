@@ -1,13 +1,35 @@
 import streamlit as st
 import json
+import requests
+import os
 
+API_URL = "http://212.192.29.158:25200"
+API_KEY = os.getenv("MAY")
+
+def fetch_channels():
+    try:
+        response = requests.get(f"{API_URL}/get_channels", params={"api_key": API_KEY})
+        if response.status_code == 200:
+            return response.json()
+        else:
+            st.error("Failed to fetch channels. Check API key or server.")
+            return {}
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error fetching channels: {e}")
+        return {}
+
+# Set up Streamlit page configuration
 st.set_page_config(
     page_title="Soul Knight Prequel Discord Embed Generator",
     page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",
 )
-# Initial setup for the page
 st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
+
+# Fetch channels
+channels = fetch_channels()
+channel_names = list(channels.keys()) if channels else ["No channels available"]
+selected_channel = st.selectbox("Select a Discord Channel", channel_names)
 
 # Store embed data in session state
 if "embeds" not in st.session_state:
@@ -22,23 +44,7 @@ if st.button("Add New Embed"):
         "image": None, "thumbnail": None
     })
 
-st.subheader("Instructions")
-st.write("1. Customize your embeds below by adding titles, descriptions, colors, authors, and footers.")
-st.write("2. Add fields to each embed if needed (e.g., additional info in the embed).")
-st.write("3. Once you're happy with the embeds, click 'Generate Embed Data JSON' to create the JSON string.")
-
-st.subheader("Or paste your previous JSON below:")
-old_json = st.text_area("Paste old JSON here:", height=200, key="old_json_input")
-
-if old_json and not st.session_state.embeds:
-    try:
-        embed_data = json.loads(old_json)
-        st.session_state.embeds = embed_data
-        st.write("Loaded your previous JSON successfully!")
-    except json.JSONDecodeError:
-        st.write("Invalid JSON format. Please paste a valid JSON.")
-
-# Display embed inputs for all current embeds
+# Embed customization interface
 for index, embed in enumerate(st.session_state.embeds):
     with st.expander(f"Embed {index + 1}", expanded=True):
         embed["title"] = st.text_input(f"Title for Embed {index + 1}", value=embed["title"], key=f"title_{index}")
@@ -93,6 +99,7 @@ if st.button("Generate Embed Data JSON"):
     st.text_area("Embed Data JSON String", value=embed_data_json, height=300)
     st.download_button("Download Embed JSON", data=embed_data_json, file_name="discord_embeds.json", mime="application/json")
 
+# Preview Embed button
 if st.button("Preview Embed"):
     st.markdown("### Embed Preview")
     for embed in st.session_state.embeds:
@@ -107,10 +114,26 @@ if st.button("Preview Embed"):
     
         fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
 
-
     
         html_content = f"<div style='background-color: #36393f; padding: 16px; border-radius: 8px; color: white; {color_style} margin-bottom: 20px;'>{thumbnail_html}<div>{author_html}<div style='font-size: 18px; font-weight: bold;'>{embed['title']}</div>{description_html}{fields_html}{image_html}{footer_html}</div></div>"
 
     
         st.markdown(html_content, unsafe_allow_html=True)
 
+# Send Embed button (send to selected channel)
+if st.button("Send Embed"):
+    if selected_channel != "No channels available":
+        embed_payload = {
+            "channel": selected_channel,
+            "embeds": embed_data  # This should be the embed data you've built earlier
+        }
+        try:
+            response = requests.post(f"{API_URL}/send_embed", json=embed_payload, params={"api_key": API_KEY})
+            if response.status_code == 200:
+                st.success("Embed successfully sent!")
+            else:
+                st.error(f"Failed to send embed: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error sending embed: {e}")
+    else:
+        st.error("Please select a channel to send the embed.")
