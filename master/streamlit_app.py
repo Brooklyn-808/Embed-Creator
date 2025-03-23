@@ -127,7 +127,7 @@ if st.button("Preview Embed"):
 
 # Send Embed button (send to selected channel)
 if st.button("Send Embed"):
-    if selected_channel != "No channels available" and st.session_state.embeds:
+    if selected_channel != "No channels available" and st.session_state.embeds and st.session_state.channels.get(selected_channel):
         embed_data = [
             {
                 "title": embed["title"],
