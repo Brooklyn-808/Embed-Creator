@@ -5,6 +5,11 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+# Set up Streamlit page configuration
+st.set_page_config(
+    page_title="Soul Knight Prequel Discord Embed Generator",
+    page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",
+)
 API_URL = "http://212.192.29.158:25200"
 API_KEY = ""
 API_KEY = st.text_input(f"Key:", value=API_KEY, key=f"keybox")
@@ -21,11 +26,6 @@ def fetch_channels():
         st.error(f"Error fetching channels: {e}")
         return {}
 
-# Set up Streamlit page configuration
-st.set_page_config(
-    page_title="Soul Knight Prequel Discord Embed Generator",
-    page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",
-)
 st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
 
