@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_URL = "http://212.192.29.158:25200"
+API_KEY = ""
 API_KEY = st.text_input(f"Key:", value=API_KEY, key=f"keybox")
 
 def fetch_channels():
