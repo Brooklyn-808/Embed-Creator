@@ -140,7 +140,7 @@ if st.button("Send Embed"):
         ]
 
         embed_payload = {
-            "channel": selected_channel,
+            "channel": channels[selected_channel],
             "embeds": embed_data,
             "message": None
         }
