@@ -124,18 +124,34 @@ if st.button("Preview Embed"):
 
 # Send Embed button (send to selected channel)
 if st.button("Send Embed"):
-    if selected_channel != "No channels available":
+    if selected_channel != "No channels available" and st.session_state.embeds:
+        embed_data = [
+            {
+                "title": embed["title"],
+                "description": embed["description"],
+                "color": embed["color"],
+                "footer": {"text": embed["footer"].get("text", ""), "icon_url": embed["footer"].get("icon_url", "")},
+                "author": {"name": embed["author"].get("name", ""), "icon_url": embed["author"].get("icon_url", "")},
+                "image": {"url": embed["image"]} if embed["image"] else None,
+                "thumbnail": {"url": embed["thumbnail"]} if embed["thumbnail"] else None,
+                "fields": [{"name": field["name"], "value": field["value"], "inline": field["inline"]} for field in embed["fields"]]
+            }
+            for embed in st.session_state.embeds if embed["title"] or embed["description"]
+        ]
+
         embed_payload = {
             "channel": selected_channel,
-            "embeds": embed_data  # This should be the embed data you've built earlier
+            "embeds": embed_data
         }
+
         try:
-            response = requests.post(f"{API_URL}/send_embed", json=embed_payload, params={"api_key": API_KEY})
+            response = requests.post(f"{API_URL}/send_embed", json=embed_payload)
             if response.status_code == 200:
-                st.success("Embed successfully sent!")
+                st.success("Embed sent successfully!")
             else:
-                st.error(f"Failed to send embed: {response.status_code}")
+                st.error(f"Failed to send embed. Status code: {response.status_code}")
         except requests.exceptions.RequestException as e:
             st.error(f"Error sending embed: {e}")
     else:
-        st.error("Please select a channel to send the embed.")
+        st.error("Please select a channel and create at least one embed before sending.")
+
