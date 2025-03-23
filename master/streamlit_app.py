@@ -143,7 +143,7 @@ if st.button("Send Embed"):
         ]
 
         embed_payload = {
-            "channel": st.session_state.channels[str(selected_channel)],
+            "channel": st.session_state.channels.get(selected_channel),
             "embeds": embed_data,
             "message": None,
             "api_key": API_KEY
@@ -158,5 +158,5 @@ if st.button("Send Embed"):
         except requests.exceptions.RequestException as e:
             st.error(f"Error sending embed: {e}")
     else:
-        st.error("Please select a channel and create at least one embed before sending.")
+        st.error(f"Please select a channel and create at least one embed before sending.\n{selected_channel} {st.session_state.channels.get(selected_channel)}")
 
