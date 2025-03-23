@@ -154,7 +154,7 @@ if st.button("Send Embed"):
             if response.status_code == 200:
                 st.success("Embed sent successfully!")
             else:
-                st.error(f"Failed to send embed. Status code: {response.status_code}")
+                st.error(f"Failed to send embed. Status code: {response.status_code} {st.session_state.channels.get(selected_channel)}")
         except requests.exceptions.RequestException as e:
             st.error(f"Error sending embed: {e}")
     else:
