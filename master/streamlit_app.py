@@ -13,7 +13,9 @@ st.set_page_config(
 API_URL = "http://212.192.29.158:25200"
 API_KEY = ""
 API_KEY = st.text_input(f"Key:", value=API_KEY, key=f"keybox")
-
+if st.button("Reload Channels"):
+    st.session_state.channels = fetch_channels()
+    st.rerun()
 def fetch_channels():
     try:
         response = requests.get(f"{API_URL}/get_channels", params={"api_key": API_KEY})
