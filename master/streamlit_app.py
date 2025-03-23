@@ -2,6 +2,8 @@ import streamlit as st
 import json
 import requests
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 API_URL = "http://212.192.29.158:25200"
 API_KEY = os.getenv("MAY")
