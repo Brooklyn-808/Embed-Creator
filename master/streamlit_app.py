@@ -29,8 +29,10 @@ st.title("Soul Knight Prequel Discord Embed Generator")
 st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
 
 # Fetch channels
-channels = fetch_channels()
-channel_names = list(channels.keys()) if channels else ["No channels available"]
+if not st.session_state.channels:
+    st.session_state.channels = fetch_channels()
+
+channel_names = list(st.session_state.channels.keys()) if st.session_state.channels else ["No channels available"]
 selected_channel = st.selectbox("Select a Discord Channel", channel_names)
 
 # Store embed data in session state
@@ -140,7 +142,7 @@ if st.button("Send Embed"):
         ]
 
         embed_payload = {
-            "channel": channels[selected_channel],
+            "channel": st.session_state.channels[selected_channel],
             "embeds": embed_data,
             "message": None
         }
