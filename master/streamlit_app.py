@@ -3,6 +3,7 @@ import json
 import requests
 import os
 from dotenv import load_dotenv
+from uuid import uuid4
 
 # Load environment variables
 load_dotenv()
@@ -131,16 +132,8 @@ if st.button("Generate Embed Data JSON"):
     embed_data_json = json.dumps(embed_data, indent=2)
     st.subheader("Generated Embed JSON")
     st.text_area("Embed Data JSON String", value=embed_data_json, height=300)
-    file_name = st.text_input("Enter file name for download (with .json extension):", key="file_name_input")
-    if file_name.strip():
-        st.download_button(
-            label="Download Embed JSON",
-            data=embed_data_json,
-            file_name=file_name.strip(),
-            mime="application/json"
-        )
-    else:
-        st.warning("Please enter a valid file name to enable download.")
+    u = str(uuid4())
+    st.download_button("Download Embed JSON", data=embed_data_json, file_name=f"{u}.json", mime="application/json")
 
 # Preview Embed button
 if st.button("Preview Embed"):
