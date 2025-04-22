@@ -131,7 +131,8 @@ if st.button("Generate Embed Data JSON"):
     embed_data_json = json.dumps(embed_data, indent=2)
     st.subheader("Generated Embed JSON")
     st.text_area("Embed Data JSON String", value=embed_data_json, height=300)
-    st.download_button("Download Embed JSON", data=embed_data_json, file_name="discord_embeds.json", mime="application/json")
+    file_name = st.text_input("Enter file name for download (default: discord_embeds.json)", value="discord_embeds.json")
+    st.download_button("Download Embed JSON", data=embed_data_json, file_name=file_name, mime="application/json")
 
 # Preview Embed button
 if st.button("Preview Embed"):
