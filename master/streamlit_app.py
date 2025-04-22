@@ -3,7 +3,11 @@ import json
 import requests
 import os
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
+
+# Function to fetch channels
 def fetch_channels():
     try:
         response = requests.get(f"{API_URL}/get_channels", params={"api_key": API_KEY})
@@ -15,35 +19,57 @@ def fetch_channels():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching channels: {e}")
         return {}
+
 # Set up Streamlit page configuration
 st.set_page_config(
     page_title="Soul Knight Prequel Discord Embed Generator",
     page_icon="https://cdn.discordapp.com/emojis/1250132570864091171.png",
 )
+
+# Constants
 API_URL = "http://212.192.29.158:25200"
 API_KEY = ""
-API_KEY = st.text_input(f"Key:", value=API_KEY, key=f"keybox")
+
+# Input for API key
+API_KEY = st.text_input("Key:", value=API_KEY, key="keybox")
+
+# Reload channels button
 if st.button("Reload Channels"):
     st.session_state.channels = fetch_channels()
     st.rerun()
 
-
+# Page title and description
 st.title("Soul Knight Prequel Discord Embed Generator")
-st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string")
+st.write("Create, preview, and export your Discord embeds easily. Customize each embed and generate a JSON string.")
 
 # Fetch channels
 if 'channels' not in st.session_state:
     st.session_state.channels = fetch_channels()
 
-
 channel_names = list(st.session_state.channels.keys()) if st.session_state.channels else ["No channels available"]
 selected_channel = st.selectbox("Select a Discord Channel", channel_names)
 
-# Store embed data in session state
+# Initialize session state for embeds
 if "embeds" not in st.session_state:
     st.session_state.embeds = []
 
-# Add a new embed section
+# Restore progress from JSON
+st.subheader("Restore Progress from JSON")
+restore_json = st.text_area("Paste your Embed JSON here to restore progress", value="", height=200)
+
+if st.button("Restore Progress"):
+    try:
+        restored_embeds = json.loads(restore_json)
+        if isinstance(restored_embeds, list):
+            st.session_state.embeds = restored_embeds
+            st.success("Progress restored successfully!")
+            st.rerun()
+        else:
+            st.error("Invalid JSON format. Please ensure it is a list of embeds.")
+    except json.JSONDecodeError as e:
+        st.error(f"Invalid JSON: {e}")
+
+# Add a new embed
 if st.button("Add New Embed"):
     st.session_state.embeds.append({
         "title": "", "description": "", "color": "#FFFFFF",
@@ -119,16 +145,16 @@ if st.button("Preview Embed"):
         thumbnail_html = f"<img src='{embed['thumbnail']}' style='width: 80px; height: 80px; border-radius: 4px; float: right;'>" if embed['thumbnail'] else ""
         footer_html = f"<div style='font-size: 10px; color: #b9bbbe;'>{ficon_ur} {embed['footer'].get('text', '')}</div>" if embed['footer'].get('text') else ""
         description_html = f"<div style='font-size: 14px; word-wrap: break-word; color: #b9bbbe;'>{embed['description']}</div>"
-    
-        fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" for field in embed["fields"]]) + "</div>"
+        fields_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">' + "".join([
+            f"<div style='flex: 1; min-width: 45%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>" if field["inline"] else
+            f"<div style='width: 100%; margin-top: 8px; border-top: 1px solid #b9bbbe; padding-top: 4px;'><strong>{field['name']}</strong><br>{field['value']}</div>"
+            for field in embed["fields"]
+        ]) + "</div>"
 
-    
         html_content = f"<div style='background-color: #36393f; padding: 16px; border-radius: 8px; color: white; {color_style} margin-bottom: 20px;'>{thumbnail_html}<div>{author_html}<div style='font-size: 18px; font-weight: bold;'>{embed['title']}</div>{description_html}{fields_html}{image_html}{footer_html}</div></div>"
-
-    
         st.markdown(html_content, unsafe_allow_html=True)
 
-# Send Embed button (send to selected channel)
+# Send Embed button
 if st.button("Send Embed"):
     if selected_channel != "No channels available" and st.session_state.embeds and st.session_state.channels.get(selected_channel):
         embed_data = [
@@ -157,9 +183,8 @@ if st.button("Send Embed"):
             if response.status_code == 200:
                 st.success("Embed sent successfully!")
             else:
-                st.error(f"Failed to send embed. Status code: {response.status_code} {st.session_state.channels.get(selected_channel)}")
+                st.error(f"Failed to send embed. Status code: {response.status_code}")
         except requests.exceptions.RequestException as e:
             st.error(f"Error sending embed: {e}")
     else:
-        st.error(f"Please select a channel and create at least one embed before sending.\n{selected_channel} {st.session_state.channels.get(selected_channel)}")
-
+        st.error("Please select a channel and create at least one embed before sending.")
